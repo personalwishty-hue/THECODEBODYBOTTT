@@ -19,7 +19,7 @@ SUPABASE_KEY: str     = os.environ["SUPABASE_KEY"]
 GEMINI_API_KEY: str   = os.environ["GEMINI_API_KEY"]
 POLL_INTERVAL: int    = int(os.getenv("POLL_INTERVAL_SECONDS", "30"))
 
-GEMINI_MODEL          = "gemini-1.5-flash"
+GEMINI_MODEL          = "gemini-2.5-flash"
 GEMINI_BASE           = "https://generativelanguage.googleapis.com/v1beta/models"
 
 # ── Supabase client ───────────────────────────────────────────────────────────
@@ -48,10 +48,10 @@ def gemini_generate(prompt: str, system: str = "", temperature: float = 0.3) -> 
 
 def gemini_search(query: str) -> str:
     """Call Gemini with Google Search grounding to get live web data."""
-    url = f"{GEMINI_BASE}/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"{GEMINI_BASE}/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
     body = {
         "contents": [{"role": "user", "parts": [{"text": query}]}],
-        "tools": [{"google_search_retrieval": {}}],
+        "tools": [{"google_search": {}}],
         "generationConfig": {"maxOutputTokens": 4096},
     }
     r = requests.post(url, json=body, timeout=60)
